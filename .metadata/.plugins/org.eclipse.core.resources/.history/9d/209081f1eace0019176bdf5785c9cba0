@@ -1,0 +1,62 @@
+package com.demo;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import com.model.demo.Employee;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+@RestController
+public class DbServiceController {
+	 static MongoClient  mongoClient ;
+	 static MongoDatabase mongoDatabase;
+	 private static MongoCollection<Document> mongoCollection;
+	static {
+		 mongoClient = new MongoClient( "localhost" , 27017 );
+		 mongoDatabase = mongoClient.getDatabase("empDb"); 
+		 mongoCollection = mongoDatabase.getCollection("empcol");
+	}
+	@Autowired
+	RestTemplate restTemplate;
+	
+	@RequestMapping("/empinfo")
+	public String getEmployee() {
+		String response = restTemplate.exchange("http://localhost:8666/info", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {
+		}).getBody();
+			
+		return response;
+	}
+	
+	@RequestMapping("/employees")
+	public List<Employee> getEmployees(){
+		FindIterable<Document> iterDoc = mongoCollection.find();
+		Iterator iterator = iterDoc.iterator();
+		List<Employee> employees = new ArrayList<>();
+		
+		while(iterator.hasNext()) {
+			employees.add((Employee) iterator.next());
+		}
+		System.out.println(employees.size());
+		return employees;
+	}
+	
+	@Bean
+	//@LoadBalanced
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+	
+}

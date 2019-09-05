@@ -1,0 +1,9 @@
+server:
+  port: 6000
+  
+eureka:  instance:    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 2
+  
+  client:    service-url:      default-zone: http://127.0.0.1:8761/eureka  
+      
+spring:  application:    name: employee  

@@ -1,0 +1,7 @@
+server:
+  port: 8666
+  
+eureka:  instance:    prefer-ip-address: true  
+  client:    service-url:      default-zone: http://127.0.0.1:8761/eureka  
+      
+spring:  application:    name: employee-service  

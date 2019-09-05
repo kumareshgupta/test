@@ -1,0 +1,32 @@
+package com.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+@RestController
+public class DbServiceController {
+
+	@Autowired
+	RestTemplate restTemplate;
+	
+	@RequestMapping("/empinfo")
+	public String getEmployee() {
+		String response = restTemplate.exchange("http://localhost:8666/info", HttpMethod.GET, null, new ParameterizedTypeReference<String>() {
+		}).getBody();
+			
+		return response;
+	}
+	
+	@Bean
+	@LoadBalanced
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+	
+}

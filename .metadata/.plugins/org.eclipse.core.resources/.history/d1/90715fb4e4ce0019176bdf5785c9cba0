@@ -1,0 +1,18 @@
+package com.model.demo;
+
+public class Employee {
+	private Integer empId;
+	private String empName;
+	private String location;
+	
+	public Employee() {}
+	
+	public Employee(Integer empId, String empName, String location) {
+		super();
+		this.empId = empId;
+		this.empName = empName;
+		this.location = location;
+	}
+	
+	
+}
